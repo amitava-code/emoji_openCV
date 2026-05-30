@@ -36,6 +36,41 @@ while cap.isOpened():
     face_results = face_mesh.process(rgb_frame)
     hand_results = hands.process(rgb_frame)
 
+    # Hand_Gesture Logic
+
+    detected_state= "NEUTRAL"
+
+    if hand_results.multi_hand_landmarks:
+        for hand_landmarks in hand_results.multi_hand_landmarks:
+            lm = hand_landmarks.landmark
+
+            thumb_tip=lm[mp_hands.HandLandmark.THUMB_TIP].y
+            thumb_ip=lm[mp_hands.HandLandmark.THUMB_IP].y
+
+            index_tip=lm[mp_hands.HandLandmark.INDEX_FINGER_TIP].y
+            index_pip=lm[mp_hands.HandLandmark.INDEX_FINGER_PIP].y
+
+            middle_tip=lm[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y
+            middle_pip=lm[mp_hands.HandLandmark.MIDDLE_FINGER_PIP].y
+
+
+            if thumb_tip < thumb_ip and index_tip > index_pip and middle_tip > middle_pip:
+                detected_state = "THUMBS_UP"
+
+
+            elif index_tip < index_pip and middle_tip > middle_pip and thumb_tip > thumb_ip:
+                detected_state = "YOU"
+
+    cv2.putText(
+        frame,
+        f"STATUS: {detected_state}",
+        (20, 50),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.8,
+        (0, 255, 0),
+        2
+    )
+
     cv2.imshow("Camera Feed", frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
