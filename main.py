@@ -1,5 +1,6 @@
 import cv2
 import mediapipe as mp
+import math
 
 #SETUP Mediapipe
 
@@ -61,6 +62,31 @@ while cap.isOpened():
             elif index_tip < index_pip and middle_tip > middle_pip and thumb_tip > thumb_ip:
                 detected_state = "YOU"
 
+   
+
+    if detected_state == "NEUTRAL" and face_results.multi_face_landmarks:
+        for face_landmarks in face_results.multi_face_landmarks:
+
+            upper_lip= face_landmarks.landmark[13]
+            lower_lip = face_landmarks.landmark[14]
+            mouth_left= face_landmarks.landmark[61]
+            mouth_right= face_landmarks.landmark[291]
+
+
+            mouth_opening= lower_lip.y - upper_lip.y
+
+            mouth_width = math.hypot(
+                mouth_right.x - mouth_left.x,
+                mouth_right.y - mouth_left.y
+            )
+
+            if mouth_opening > 0.05:
+                detected_state= "SCARY"
+
+            elif 0.015 < mouth_opening < 0.05 and mouth_width > 0.06:
+                detected_state = "HAPPY"
+                 
+
     cv2.putText(
         frame,
         f"STATUS: {detected_state}",
@@ -70,6 +96,9 @@ while cap.isOpened():
         (0, 255, 0),
         2
     )
+
+
+
 
     cv2.imshow("Camera Feed", frame)
 
