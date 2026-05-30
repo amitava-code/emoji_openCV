@@ -31,6 +31,11 @@ while cap.isOpened():
 
     frame = cv2.flip(frame, 1)
 
+    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    face_results = face_mesh.process(rgb_frame)
+    hand_results = hands.process(rgb_frame)
+
     cv2.imshow("Camera Feed", frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
