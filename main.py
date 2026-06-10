@@ -1,6 +1,31 @@
 import cv2
 import mediapipe as mp
 import math
+from PIL import Image
+import numpy as np
+
+def load_gif(path):
+    gif = Image.open(path)
+    frames = []
+    try:
+        while True:
+            frame = gif.copy().convert("RGBA")
+            bgr = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2BGR)
+            frames.append(bgr)
+            gif.seek(gif.tell() + 1)
+    except EOFError:
+        pass
+    return frames
+
+
+gif_map = {
+    "HAPPY":     load_gif("gifs/happy_1.jpg"),
+    "THUMBS_UP": load_gif("gifs/thumbsup_3.jpg"),
+    "YOU":       load_gif("gifs/you_3.jpg"),
+}
+
+gif_frame_index = 0
+last_state = None
 
 #SETUP Mediapipe
 
