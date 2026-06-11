@@ -26,6 +26,24 @@ gif_map = {
 
 gif_frame_index = 0
 last_state = None
+ 
+ # GIF OVERLAY FUNCTION 
+
+def overlay_gif(background, gif_frame, position=(20, 80), size=(150, 150)):
+   
+    x, y = position
+    w, h = size
+
+    gif_resized = cv2.resize(gif_frame, (w, h))
+    bkg_h, bkg_w = background.shape[:2]
+
+    # Clamp so GIF never goes out of frame
+    x2 = min(x + w, bkg_w)
+    y2 = min(y + h, bkg_h)
+    gif_crop = gif_resized[0:y2-y, 0:x2-x]
+
+    background[y:y2, x:x2] = gif_crop
+    return background
 
 #SETUP Mediapipe
 
