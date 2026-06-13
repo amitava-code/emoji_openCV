@@ -128,6 +128,23 @@ while cap.isOpened():
 
             elif 0.015 < mouth_opening < 0.05 and mouth_width > 0.06:
                 detected_state = "HAPPY"
+
+    
+    if detected_state !=last_state:
+        gif_frame_index=0
+        last_state = detected_state
+
+    if detected_state in gif_map:
+        current_gif_frames = gif_map[detected_state]
+        gif_frame_index = gif_frame_index % len(current_gif_frames)
+        gif_frame = current_gif_frames[gif_frame_index]
+        gif_frame_index += 1
+        h, w = frame.shape[:2]
+        overlay_gif(frame, gif_frame,
+                    position=(w - 170, h - 170),
+                    size=(150,150))
+       
+    
                  
 
     cv2.putText(
